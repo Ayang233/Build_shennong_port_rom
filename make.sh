@@ -228,11 +228,6 @@ sudo unzip -o -q "$GITHUB_WORKSPACE"/"${device}"_files/displayconfig.zip -d "$GI
 echo -e "${Red}- 修复精准电量 (亮屏可用时长)"
 sudo rm -rf "$GITHUB_WORKSPACE"/images/system/system/app/PowerKeeper/*
 sudo unzip -o -q "$GITHUB_WORKSPACE"/"${device}"_files/PowerKeeper.zip -d "$GITHUB_WORKSPACE"/images/system/system/app/PowerKeeper/
-# 修复注视感知
-echo -e "${Red}- 修复注视感知"
-sudo rm -rf "$GITHUB_WORKSPACE"/images/product/app/MiAONService*
-mkdir "$GITHUB_WORKSPACE"/images/product/app/MiAONService
-sudo cp "$GITHUB_WORKSPACE"/"${device}"_files/MiAONService.apk "$GITHUB_WORKSPACE"/images/product/app/MiAONService
 # 统一 build.prop
 echo -e "${Red}- 统一 build.prop"
 sudo sed -i 's/ro.build.user=[^*]*/ro.build.user=YuKongA/' "$GITHUB_WORKSPACE"/images/system/system/build.prop
@@ -261,7 +256,7 @@ for app in "${apps[@]}"; do
 done
 # 分辨率修改
 echo -e "${Red}- 分辨率修改"
-sudo sed -i 's/persist.miui.density_v2=[^*]*/persist.miui.density_v2=480/' "$GITHUB_WORKSPACE"/images/product/etc/build.prop
+sudo sed -i 's/persist.miui.density_v2=[^*]*/persist.miui.density_v2=560/' "$GITHUB_WORKSPACE"/images/product/etc/build.prop
 # 替换相机
 echo -e "${Red}- 替换相机"
 sudo rm -rf "$GITHUB_WORKSPACE"/images/product/priv-app/MiuiCamera/*
@@ -270,36 +265,12 @@ sudo cp -f "$GITHUB_WORKSPACE"/"${device}"_files/MiuiCamera.apk "$GITHUB_WORKSPA
 # 替换相机标定
 echo -e "${Red}- 替换相机标定"
 sudo unzip -o -q "$GITHUB_WORKSPACE"/"${device}"_files/CameraTools_beta.zip -d "$GITHUB_WORKSPACE"/images/product/app/
-# 占位广告应用
-echo -e "${Red}- 占位广告应用"
-sudo rm -rf "$GITHUB_WORKSPACE"/images/product/app/MSA/*
-sudo cp -f "$GITHUB_WORKSPACE"/"${device}"_files/MSA.apk "$GITHUB_WORKSPACE"/images/product/app/MSA
-# 替换开机动画
-echo -e "${Red}- 替换开机动画"
-sudo cp -f "$GITHUB_WORKSPACE"/"${device}"_files/bootanimation.zip "$GITHUB_WORKSPACE"/images/product/media/bootanimation.zip
-# 替换完美图标
-echo -e "${Red}- 替换完美图标"
-cd "$GITHUB_WORKSPACE"
-git clone --depth=1 https://github.com/pzcn/Perfect-Icons-Completion-Project.git icons &>/dev/null
-for pkg in "$GITHUB_WORKSPACE"/images/product/media/theme/miui_mod_icons/dynamic/*; do
-  if [[ -d "$GITHUB_WORKSPACE"/icons/icons/$pkg ]]; then
-    rm -rf "$GITHUB_WORKSPACE"/icons/icons/$pkg
-  fi
-done
-rm -rf "$GITHUB_WORKSPACE"/icons/icons/com.xiaomi.scanner
-mv "$GITHUB_WORKSPACE"/images/product/media/theme/default/icons "$GITHUB_WORKSPACE"/images/product/media/theme/default/icons.zip
-rm -rf "$GITHUB_WORKSPACE"/images/product/media/theme/default/dynamicicons
-mkdir -p "$GITHUB_WORKSPACE"/icons/res
-mv "$GITHUB_WORKSPACE"/icons/icons "$GITHUB_WORKSPACE"/icons/res/drawable-xxhdpi
-cd "$GITHUB_WORKSPACE"/icons
-zip -qr "$GITHUB_WORKSPACE"/images/product/media/theme/default/icons.zip res
-cd "$GITHUB_WORKSPACE"/icons/themes/Hyper/
-zip -qr "$GITHUB_WORKSPACE"/images/product/media/theme/default/dynamicicons.zip layer_animating_icons
-cd "$GITHUB_WORKSPACE"/icons/themes/common/
-zip -qr "$GITHUB_WORKSPACE"/images/product/media/theme/default/dynamicicons.zip layer_animating_icons
-mv "$GITHUB_WORKSPACE"/images/product/media/theme/default/icons.zip "$GITHUB_WORKSPACE"/images/product/media/theme/default/icons
-mv "$GITHUB_WORKSPACE"/images/product/media/theme/default/dynamicicons.zip "$GITHUB_WORKSPACE"/images/product/media/theme/default/dynamicicons
-rm -rf "$GITHUB_WORKSPACE"/icons
+# 阿洋自用添加文件
+echo -e "${Red}- 自用添加文件"
+sudo rm -rf "$GITHUB_WORKSPACE"/images/product/media/theme/miui_mod_icons/*
+sudo rm -rf "$GITHUB_WORKSPACE"/images/product/media/theme/default/*
+sudo unzip -o -q "$GITHUB_WORKSPACE"/"${device}"_files/miui_mod_icons.zip -d "$GITHUB_WORKSPACE"/images/product/media/theme/miui_mod_icons
+sudo unzip -o -q "$GITHUB_WORKSPACE"/"${device}"_files/default.zip -d "$GITHUB_WORKSPACE"/images/product/media/theme/default
 # 常规修改
 echo -e "${Red}- 常规修改"
 sudo rm -rf "$GITHUB_WORKSPACE"/"${device}"/vendor/recovery-from-boot.p
